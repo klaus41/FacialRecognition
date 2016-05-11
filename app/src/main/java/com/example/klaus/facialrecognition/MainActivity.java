@@ -9,19 +9,17 @@ import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 
 public class MainActivity extends Activity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static int RESULT_LOAD_IMAGE = 1;
+    static  int RESULT_LOAD_IMAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ImageView imageView = (ImageView) findViewById(R.id.imgView);
-        imageView.setImageResource(R.drawable.cat);
 
         Button buttonOpenCamera = (Button) findViewById(R.id.buttonCamera);
         buttonOpenCamera.setOnClickListener((new View.OnClickListener() {
@@ -29,6 +27,10 @@ public class MainActivity extends Activity {
                 dispatchTakePictureIntent();
             }
         }));
+
+        ImageView imageView = (ImageView) findViewById(R.id.imgView);
+        imageView.setImageResource(R.drawable.shutterstock_151971218);
+
         Button buttonLoadImage = (Button) findViewById(R.id.buttonLoadPicture);
         buttonLoadImage.setOnClickListener(new View.OnClickListener() {
 
@@ -40,6 +42,15 @@ public class MainActivity extends Activity {
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
+            }
+        });
+
+        Button btnMain = (Button)findViewById((R.id.buttonGoToResult));
+        btnMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Result.class);
+                startActivity(intent);
             }
         });
 
