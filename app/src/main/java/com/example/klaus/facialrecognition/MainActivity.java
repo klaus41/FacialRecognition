@@ -1,5 +1,4 @@
 package com.example.klaus.facialrecognition;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -14,14 +13,11 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static int RESULT_LOAD_IMAGE = 1;
+    static  int RESULT_LOAD_IMAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ImageView imageView = (ImageView) findViewById(R.id.imgView);
-        imageView.setImageResource(R.drawable.shutterstock_151971218);
 
         Button buttonOpenCamera = (Button) findViewById(R.id.buttonCamera);
         buttonOpenCamera.setOnClickListener((new View.OnClickListener() {
@@ -29,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         }));
+
+
+
+        ImageView imageView = (ImageView) findViewById(R.id.imgView);
+        imageView.setImageResource(R.drawable.shutterstock_151971218);
+
         Button buttonLoadImage = (Button) findViewById(R.id.buttonLoadPicture);
         buttonLoadImage.setOnClickListener(new View.OnClickListener() {
 
