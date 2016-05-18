@@ -3,7 +3,9 @@ package com.example.klaus.facialrecognition;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,6 +13,10 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
@@ -25,7 +31,7 @@ public class MainActivity extends Activity {
     private static FaceDetector detector;
     private static Frame frame;
     private static String picturePath;
-
+    private ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +44,7 @@ public class MainActivity extends Activity {
             }
         }));
 
-        ImageView imageView = (ImageView) findViewById(R.id.imgView);
+        imageView = (ImageView) findViewById(R.id.imgView);
         imageView.setImageResource(R.drawable.shutterstock_151971218);
 
         Button buttonLoadImage = (Button) findViewById(R.id.buttonLoadPicture);
@@ -73,9 +79,30 @@ public class MainActivity extends Activity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RESULT_LOAD_IMAGE) {
+                Uri imageUri = data.getData();
+                InputStream inputStream;
+
+                try {
+                    inputStream = getContentResolver().openInputStream(imageUri);
+
+                    Bitmap image = BitmapFactory.decodeStream(inputStream);
+                    
+                    imageView.setImageBitmap(image);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Unable to open image", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
@@ -103,5 +130,7 @@ public class MainActivity extends Activity {
                 System.out.println(landmark.getPosition().y);
             }
         }
-    }
+    }*/
+
+
 }
