@@ -5,17 +5,27 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.Landmark;
+import com.google.android.gms.vision.face.FaceDetector;
 
 
 public class MainActivity extends Activity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static  int RESULT_LOAD_IMAGE = 1;
+
+    private static FaceDetector detector;
+    private static Frame frame;
+    private static String picturePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +64,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        detector = new FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false).setLandmarkType(FaceDetector.ALL_LANDMARKS).build();
     }
     protected void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -75,12 +86,22 @@ public class MainActivity extends Activity {
             cursor.moveToFirst();
 
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
+            picturePath = cursor.getString(columnIndex);
             cursor.close();
 
             ImageView imageView = (ImageView) findViewById(R.id.imgView);
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        }
 
+        frame = new Frame.Builder().setBitmap(BitmapFactory.decodeFile(picturePath)).build();
+        SparseArray<Face> faces = detector.detect(frame);
+        for(int i = 0; i < faces.size(); i++){
+            Face face = faces.valueAt(i);
+            for(Landmark landmark : face.getLandmarks()){
+                System.out.println(landmark.getType());
+                System.out.println(landmark.getPosition().x);
+                System.out.println(landmark.getPosition().y);
+            }
         }
     }
 }
